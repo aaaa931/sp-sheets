@@ -1,25 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useMemo } from "react";
+import { ThemeProvider } from "@mui/material/styles";
+
+import "@/App.css";
+import DefaultLayout from "@/layouts/default";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { lightTheme, darkTheme } from "@/theme";
+import { initTheme } from "@/theme/themeSlice";
 
 function App() {
+  const mode = useAppSelector((state) => state.themeSlice.mode);
+  const dispatch = useAppDispatch();
+
+  const theme = useMemo(
+    () => (mode === "light" ? lightTheme : darkTheme),
+    [mode]
+  );
+
+  useEffect(() => {
+    dispatch(initTheme());
+  }, [dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <DefaultLayout />
+    </ThemeProvider>
   );
 }
 
